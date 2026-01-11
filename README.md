@@ -2,6 +2,8 @@
 
 Animated visualizations exploring global development trends using the [Gapminder](https://www.gapminder.org/) dataset.
 
+Advanced Visualization in R course project
+
 ## Quick Start
 
 ```bash
@@ -10,6 +12,12 @@ Rscript analysis.R
 
 This generates 4 animated GIF files in the project directory.
 
+```bash
+Rscript analysis_part2.R
+```
+
+This generates 1 additional animated GIF file (bar chart race).
+
 ## Requirements
 
 The script auto-installs missing packages. Required:
@@ -17,6 +25,7 @@ The script auto-installs missing packages. Required:
 - `ggplot2`, `dplyr` - data manipulation & plotting
 - `gganimate`, `gifski` - animation rendering
 - `ggridges` - ridgeline plots
+- `scales` - axis label formatting (e.g., comma separators)
 
 ## Generated Visualizations
 
@@ -57,17 +66,47 @@ The script auto-installs missing packages. Required:
 - Larger countries have proportionally more influence
 - Color-coded by continent for quick identification
 
+---
+
+### Visualization 3: Bar Chart Race (GDP per Capita)
+
+![Bar Chart Race](visualization3_slower.gif)
+
+**What it shows:** The top-ranked countries by GDP per capita over time, animated as a bar chart race.
+
+**Key insights:**
+- **Leaders shift over time:** Watch how small wealthy nations and resource-driven economies trade places at the top
+- **Continental patterns:** Europe and Oceania frequently dominate the highest ranks, with notable entries from the Americas and Asia
+- **Growth stories:** Rapid climbers illustrate economic transformations and convergence among high performers
+
+**Design elements:**
+- Interpolated values every 0.2 years for smooth motion
+- Bars sized by GDP per capita; color-coded by continent
+- Top 12 countries displayed per frame with value labels
+- Fixed x-axis via view-follow for stable readability
+
+**Variants:**
+- **Slower (`visualization3_slower.gif`)**: 1000 frames at 10 fps (≈100s). Smoother motion for detailed observation of rank changes.
+- **Faster (`visualization3_faster.gif`)**: 500 frames at 20 fps (≈25s). Quicker pacing for rapid overviews.
+
 ## Output Files
 
-| File                      | Dimensions     | Description                  |
-| ------------------------- | -------------- | ---------------------------- |
-| `visualization1.gif`      | Standard       | Rosling bubble chart         |
-| `visualization1_wide.gif` | 800×450 (16:9) | Rosling chart for widescreen |
-| `visualization2.gif`      | Standard       | Ridgeline density plot       |
-| `visualization2_wide.gif` | 800×450 (16:9) | Ridgeline for widescreen     |
+| File                        | Dimensions     | Description                     |
+| --------------------------- | -------------- | ------------------------------- |
+| `visualization1.gif`        | Standard       | Rosling bubble chart            |
+| `visualization1_wide.gif`   | 800×450 (16:9) | Rosling chart for widescreen    |
+| `visualization2.gif`        | Standard       | Ridgeline density plot          |
+| `visualization2_wide.gif`   | 800×450 (16:9) | Ridgeline for widescreen        |
+| `visualization3_slower.gif` | Standard       | Bar chart race (GDP per capita) |
+| `visualization3_faster.gif` | Standard       | Bar chart race (GDP per capita) |
 
 ## Data Source
 
 The `gapminder` package contains an excerpt of data from [Gapminder.org](https://www.gapminder.org/), covering 142 countries across 5 continents from 1952 to 2007 (every 5 years).
 
 Variables: `country`, `continent`, `year`, `lifeExp`, `pop`, `gdpPercap`
+
+## Authors
+
+- Paula Banach, 440186
+- Igor Kołodziej, 440239

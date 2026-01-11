@@ -11,6 +11,7 @@ required_packages <- c(
     "gganimate",
     "ggridges",
     "gifski",
+    "scales",
     "png"
 )
 
