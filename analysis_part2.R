@@ -95,5 +95,111 @@ p3 <- ggplot(gapminder_ranked, aes(group = country)) +
 # visualization3_slower: nframes = 1000, fps = 10, duration = 100
 # visualization3_faster: nframes = 500, fps = 20, duration = 25
 
-anim3 <- animate(p3, renderer = gifski_renderer(), nframes = 1000, fps = 10, duration = 100, width = 800, height = 600)
-anim_save("visualization3.gif", animation = anim3)
+anim3_slower <- animate(p3, renderer = gifski_renderer(), nframes = 1000, fps = 10, duration = 100, width = 800, height = 600)
+anim_save("visualization3_slower.gif", animation = anim3_slower)
+
+anim3_faster <- animate(p3, renderer = gifski_renderer(), nframes = 500, fps = 20, duration = 25, width = 800, height = 600)
+anim_save("visualization3_faster.gif", animation = anim3_faster)
+
+# ============================================================
+# Poland-pinned version of Visualization 3
+# ============================================================
+
+# 1. Data Transformation with Interpolation
+gapminder_interp_pin <- gapminder %>%
+    group_by(country, continent) %>%
+    do({
+        d <- .
+        years_expanded <- seq(min(d$year), max(d$year), by = 0.2)
+        gdp_approx <- approx(d$year, d$gdpPercap, xout = years_expanded)$y
+        data.frame(year = years_expanded, gdpPercap = gdp_approx)
+    }) %>%
+    ungroup()
+
+# 2. Ranking and Pinning Poland
+gapminder_ranked_pin <- gapminder_interp_pin %>%
+    group_by(year) %>%
+    arrange(desc(gdpPercap)) %>%
+    mutate(
+        real_rank = row_number(),
+        gdp_label = ifelse(
+            country == "Poland",
+            paste0(" #", real_rank, " (Avg: $", round(gdpPercap, 0), ")"),
+            paste0(" ", round(gdpPercap, 0))
+        )
+    ) %>%
+    filter(real_rank <= 10 | country == "Poland") %>%
+    mutate(
+        y_position = ifelse(real_rank > 10 & country == "Poland", 12, real_rank)
+    ) %>%
+    ungroup()
+
+# 3. Plotting
+p3_poland <- ggplot(gapminder_ranked_pin, aes(group = country)) +
+    geom_tile(
+        aes(
+            x = gdpPercap / 2,
+            y = y_position,
+            width = gdpPercap,
+            height = 0.9,
+            fill = continent
+        )
+    ) +
+    geom_tile(
+        data = dplyr::filter(gapminder_ranked_pin, country == "Poland"),
+        aes(
+            x = gdpPercap / 2,
+            y = y_position,
+            width = gdpPercap,
+            height = 0.9
+        ),
+        fill = NA, color = "black", size = 1.2
+    ) +
+    geom_text(
+        aes(x = 0, y = y_position, label = paste(country, " ")),
+        hjust = 1,
+        size = 5,
+        fontface = "bold"
+    ) +
+    geom_text(
+        aes(x = gdpPercap, y = y_position, label = gdp_label),
+        hjust = 0,
+        size = 4
+    ) +
+    geom_hline(yintercept = 11, linetype = "dashed", color = "gray50") +
+    scale_y_reverse() +
+    scale_x_continuous(labels = scales::comma) +
+    scale_fill_manual(values = c(
+        "Africa" = "#F8766D",
+        "Americas" = "#A3A500",
+        "Asia" = "#00BF7D",
+        "Europe" = "#00B0F6",
+        "Oceania" = "#E76BF3"
+    )) +
+    coord_cartesian(ylim = c(12.5, 0.5), clip = "off") +
+    labs(
+        title = "Top 10 Countries by GDP per Capita (+ Poland)",
+        subtitle = "Year: {as.integer(frame_time)}",
+        x = "GDP per Capita ($)",
+        y = NULL,
+        fill = "Continent"
+    ) +
+    theme_minimal() +
+    theme(
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        axis.text.y = element_blank(),
+        plot.margin = margin(2, 2, 2, 6, "cm"),
+        plot.title = element_text(size = 22, face = "bold", hjust = 0.5),
+        plot.subtitle = element_text(size = 18, hjust = 0.5, color = "gray50")
+    ) +
+    transition_time(year) +
+    ease_aes('linear') +
+    view_follow(fixed_x = TRUE)
+
+# 4. Rendering and Saving (Poland versions)
+anim3_Poland_slower <- animate(p3_poland, renderer = gifski_renderer(), nframes = 1000, fps = 10, duration = 100, width = 800, height = 600)
+anim_save("visualization3_Poland_slower.gif", animation = anim3_Poland_slower)
+
+anim3_Poland_faster <- animate(p3_poland, renderer = gifski_renderer(), nframes = 500, fps = 20, duration = 25, width = 800, height = 600)
+anim_save("visualization3_Poland_faster.gif", animation = anim3_Poland_faster)

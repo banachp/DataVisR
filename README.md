@@ -16,7 +16,7 @@ This generates 4 animated GIF files in the project directory.
 Rscript analysis_part2.R
 ```
 
-This generates 1 additional animated GIF file (bar chart race).
+This generates 4 additional animated GIF files (bar chart race variants, incl. Poland).
 
 ## Requirements
 
@@ -88,6 +88,8 @@ The script auto-installs missing packages. Required:
 **Variants:**
 - **Slower (`visualization3_slower.gif`)**: 1000 frames at 10 fps (≈100s). Smoother motion for detailed observation of rank changes.
 - **Faster (`visualization3_faster.gif`)**: 500 frames at 20 fps (≈25s). Quicker pacing for rapid overviews.
+- **Poland (Slower) (`visualization3_Poland_slower.gif`)**: Same timing as slower, with Poland always shown (pinned below Top 10 if outside).
+- **Poland (Faster) (`visualization3_Poland_faster.gif`)**: Same timing as faster, with Poland pinned.
 
 ## Output Files
 
@@ -99,6 +101,8 @@ The script auto-installs missing packages. Required:
 | `visualization2_wide.gif`   | 800×450 (16:9) | Ridgeline for widescreen        |
 | `visualization3_slower.gif` | Standard       | Bar chart race (GDP per capita) |
 | `visualization3_faster.gif` | Standard       | Bar chart race (GDP per capita) |
+| `visualization3_Poland_slower.gif` | Standard       | Bar chart race with Poland pinned |
+| `visualization3_Poland_faster.gif` | Standard       | Bar chart race with Poland pinned |
 
 ## Data Source
 
